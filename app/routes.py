@@ -5,4 +5,4 @@ from flask import Response
 @app.route('/')
 @app.route('/index')
 def index():
-    return "Hello, Brutha!"
+    return "Welcome to the cult of the happy elephant."
