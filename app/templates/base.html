@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <!-- Include the Bulma CSS framework for styling -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='HappyElephant.ico') }}">
+    <title>HappyElephant</title>
+</head>
+<body>
+    <section class="hero is-small is-info mb-4">
+        <div class="hero-body">
+            <h1 class="title is-1">Happy Elephant</h1>
+            <p class="subtitle is-4">
+                Our Family site
+            </p>
+        </div>
+    </section>
+    <img src="{{ url_for('static', filename='HappyElephant.png') }}">
+    <div class="container">
+        <div class="columns">
+
+            {% block content %}
+
+            {% endblock content %}
+
+        </div>
+    </div>
+</body>
+</html>
