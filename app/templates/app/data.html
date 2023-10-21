@@ -3,10 +3,14 @@
 {% block content %}
 
 <div class="column">
-  {% for d in data %}
-    <div class="box">
-{{ d.id}} {{ d.data }}
-    </div>
-  {% endfor %}
+    <table class="table">
+        <tr>
+            <th>id</th><th>Date Time</th><th>Topic</th><th>Data</th>
+{% for d in data %}
+        </tr><tr>
+            <td>{{ d.id}}</td><td>{{ d.timestamp }}</td><td>{{ d.source_topic }}</td><td>{{ d.data }}</td>
+{% endfor %}
+        </tr>
+    </table>
 </div>
 {% endblock %}

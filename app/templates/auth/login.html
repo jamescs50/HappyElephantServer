@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="column is-one-third">
+    <div class="subtitle is-4">{{ _('Sign In') }}</div>
+    <br />
+    <p>
+    <div>
+         <form role="form" method="post" action="">
+            {{ form.hidden_tag() }}
+            <div class="block">
+                <div class="field">
+                    <label class="label",for="username">{{ form.username.label }}</label>
+                    <div class="control has-icons-left has-icons-right">
+                        {{ form.username(placeholder="Username",id="username",class="input is-medium") }}
+                        <span class="icon is-small is-left">
+                              <i class="fas fa-user"></i>
+                        </span>
+
+                    </div>
+                </div>
+
+                <br />
+
+                <div class="field">
+                    <label class="label",for="password">{{ form.password.label }}</label>
+                    <div class="control has-icons-left">
+                        {{ form.password(placeholder="Password",id="password",class="input is-medium",type="password") }}
+                        <span class="icon is-small is-left">
+                             <i class="fas fa-lock"></i>
+                        </span>
+                    </div>
+                </div>
+
+
+                <div class="column is-12">
+                </div>
+
+                <br />
+                <div class="form-footer has-text-centered mt-10">
+                    <button type="submit" class="button cta is-large primary-btn raised is-clear">Log in</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    </p>
+    <p>{{ _('New User?') }} <a href="{{ url_for('auth.register') }}">{{ _('Click to Register!') }}</a></p>
+    <p>
+        {{ _('Forgot Your Password?') }}
+        <a href="{{ url_for('auth.reset_password_request') }}">{{ _('Click to Reset It') }}</a>
+
+    </p>
+</div>
+{% endblock %}

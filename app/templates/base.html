@@ -7,19 +7,59 @@
       <!-- Include the Bulma CSS framework for styling -->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='HappyElephant.ico') }}">
-    <title>HappyElephant</title>
+    {% if title %}
+    <title>{{ title }} - HappyElephant</title>
+    {% else %}
+    <title>{{ _('HappyElephant') }}</title>
+    {% endif %}
 </head>
 <body>
     <section class="hero is-small is-info mb-4">
+        <div class="navbar-menu">
+
+            <div class="navbar-end">
+                <a class="navbar-item">
+                    Home
+                </a>
+                 {% if current_user.is_anonymous %}
+                <a class="navbar-item" href="{{ url_for('auth.login') }}">
+                    Sign in
+                </a>
+                {% else %}
+                <div class="dropdown">
+                    <div class="dropdown-trigger">
+                        <button class="button" aria-haspopup="true" aria-controls="dropdown-menu3" style="border-radius: 50%;border: none;width:50px;height:50px;margin: 4px 4px;">
+                            <img src="{{ url_for('static', filename='HappyElephant.png') }}" style="width:500px;height:auto;">
+                        </button>
+                    </div>
+                    <div class="dropdown-menu" id="dropdown-menu3" role="menu">
+                        <div class="dropdown-content">
+                            <a href="#" class="dropdown-item">
+                                Profile
+                            </a>
+                            <a href="{{ url_for('auth.logout') }}" class="dropdown-item">
+                                Sign Out
+                            </a>
+                        <hr class="dropdown-divider">
+                            <a href="#" class="dropdown-item">
+                                More
+                            </a>
+                        </div>
+                    </div>
+                </div>
+               {% endif %}
+            </div>
+        </div>
         <div class="hero-body">
+            <!--<img src="{{ url_for('static', filename='HappyElephant.png') }}">-->
             <h1 class="title is-1">Happy Elephant</h1>
             <p class="subtitle is-4">
                 Our Family site
             </p>
         </div>
     </section>
-    <img src="{{ url_for('static', filename='HappyElephant.png') }}">
     <div class="container">
         <div class="columns">
 
@@ -29,5 +69,12 @@
 
         </div>
     </div>
+    <script>
+        var dropdown = document.querySelector('.dropdown');
+        dropdown.addEventListener('click', function(event) {
+          event.stopPropagation();
+          dropdown.classList.toggle('is-active');
+        });
+    </script>
 </body>
 </html>

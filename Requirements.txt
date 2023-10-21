@@ -1,5 +1,13 @@
-Flask
-Flask-SQLAlchemy
+Flask==2.3.3
+Flask-SQLAlchemys
 Flask-Migrate
-Werkzeug
-mariadb
+flask_login
+flask_mail
+flask_moment
+flask-babel
+Flask-HTTPAuth
+Flask-WTF
+PyJWT
+redis
+rq
+Werkzeug==2.3.7
