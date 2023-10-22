@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <!-- Include the Bulma CSS framework for styling -->
+      <!-- Include the Bulma CSS framework for styling
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+      -->
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='HappyElephant.ico') }}">
     {% if title %}
@@ -15,7 +18,9 @@
     <title>{{ _('HappyElephant') }}</title>
     {% endif %}
 </head>
+
 <body>
+<!--
     <section class="hero is-small is-info mb-4">
         <div class="navbar-menu">
 
@@ -36,7 +41,7 @@
                     </div>
                     <div class="dropdown-menu" id="dropdown-menu3" role="menu">
                         <div class="dropdown-content">
-                            <a href="#" class="dropdown-item">
+                            <a href="{{ url_for('auth.edit_profile') }}" class="dropdown-item">
                                 Profile
                             </a>
                             <a href="{{ url_for('auth.logout') }}" class="dropdown-item">
@@ -53,22 +58,58 @@
             </div>
         </div>
         <div class="hero-body">
-            <!--<img src="{{ url_for('static', filename='HappyElephant.png') }}">-->
+            <img src="{{ url_for('static', filename='HappyElephant.png') }}">
             <h1 class="title is-1">Happy Elephant</h1>
             <p class="subtitle is-4">
                 Our Family site
             </p>
         </div>
     </section>
-    <div class="container">
-        <div class="columns">
+-->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">
+            <img src="{{ url_for('static', filename='HappyElephant.png') }}" width="30" height="default" title="The Happy Elephant" />
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
-            {% block content %}
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+              {% if current_user.is_anonymous %}
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('auth.login') }}">{{ _('Sign In') }}</a>
+              </li>
 
-            {% endblock content %}
-
+              {% else %}
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="HappyElephant.png" width="30" height="default" title="Your Account" />
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="{{ url_for('auth.edit_profile') }}">{{ _('Edit Profile') }}</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">{{ _('Sign Out') }}</a></li>
+                </ul>
+              </li>
+              {% endif %}
+          </ul>
         </div>
+      </div>
+    </nav>
+    <div class="container mt-3">
+    {% block content %}
+
+    {% endblock content %}
     </div>
+    <!-- Bulma required script
     <script>
         var dropdown = document.querySelector('.dropdown');
         dropdown.addEventListener('click', function(event) {
@@ -76,5 +117,11 @@
           dropdown.classList.toggle('is-active');
         });
     </script>
+    -->
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
 </body>
 </html>

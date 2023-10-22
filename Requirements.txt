@@ -1,5 +1,5 @@
 Flask==2.3.3
-Flask-SQLAlchemys
+Flask-SQLAlchemy
 Flask-Migrate
 flask_login
 flask_mail

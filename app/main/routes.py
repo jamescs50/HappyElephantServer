@@ -52,6 +52,7 @@ def edit_profile():
 
 #endregion
 @bp.route('/data')
+@login_required
 def data():
     d = WeatherData.query.all()
     return  render_template('app/data.html',title='Data',data=d)

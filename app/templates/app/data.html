@@ -3,14 +3,19 @@
 {% block content %}
 
 <div class="column">
-    <table class="table">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>id</th><th>Date Time</th><th>Topic</th><th>Data</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for d in data %}
         <tr>
-            <th>id</th><th>Date Time</th><th>Topic</th><th>Data</th>
-{% for d in data %}
-        </tr><tr>
-            <td>{{ d.id}}</td><td>{{ d.timestamp }}</td><td>{{ d.source_topic }}</td><td>{{ d.data }}</td>
-{% endfor %}
+            <th>{{ d.id}}</th><td>{{ d.timestamp }}</td><td>{{ d.source_topic }}</td><td>{{ d.data }}</td>
         </tr>
+        {% endfor %}
+        </tbody>
     </table>
 </div>
 {% endblock %}
