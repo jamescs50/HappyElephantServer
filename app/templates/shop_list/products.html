@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h>Products List</h>
+<div class="column">
+    {% if products %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>id</th><th>Description</th><th>Barcode</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for p in products %}
+        <tr>
+            <form method="POST">
+                <th>{{ p.id}}</th>
+                <td>
+                    <input id="table-inputs_descr" type="text" name="description" value="{{ p.description }}">
+                </td>
+                <td>
+                    <input id="table-inputs_barcode" type="text" name="barcode" value="{{ p.barcode }}">
+                </td>
+                <td>
+                    <input type="hidden" name="p_id" value="{{ p.id }}">
+                    <button type="submit" id="edit-btn" name="action" value="update" >Save Changes<i class="fa fa-pen"></i></button>
+                    <button type="submit" id="delete-btn" name="action" value="delete"  onclick="return confirmDelete()" ><i class="fa fa-trash"></i></button>
+                </td>
+            </form>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No products defined</p>
+    {% endif %}
+</div>
+{% endblock %}
