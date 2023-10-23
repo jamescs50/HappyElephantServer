@@ -1,4 +1,5 @@
 import base64
+import enum
 from datetime import datetime, timedelta
 from hashlib import md5
 import json
@@ -13,17 +14,45 @@ import rq
 from app import db, login
 #from app.search import add_to_index, remove_from_index, query_index
 
+#region ShoppingList
+class ShopListProduct(db.Model):
+    __tablename__ = 'shop_list_product'
+    __searchable__ = ['description']
+    id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String(50))
+    picture = db.Column(db.LargeBinary)
+    barcode = db.Column(db.String(13))
+
+class ShopListRequestStatus(enum.Enum):
+    Open = 1
+    Completed = 2
+    Denied = 3
+class ShopListRequest(db.Model):
+    __tablename__ = 'shop_list_request'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), index=True)
+    product_id = db.Column(db.Integer,db.ForeignKey('shop_list_product.id'))
+    requestor = db.relationship('User', foreign_keys='ShopListRequest.user_id',
+                                back_populates='shop_list_requests')
+    requested_datetime = db.Column(db.DateTime,default=datetime.utcnow)
+    status = db.Column(db.Enum(ShopListRequestStatus))
+
+    completed_user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    completed_datetime = db.Column(db.DateTime)
+
+#endregion
 
 
-
+#region WeatherData
 class WeatherData(db.Model):
     __tablename__ = 'mqttlog'
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     source_topic = db.Column(db.String(120), index=True)
     data = db.Column(db.String(120))
+#endregion
 
-
+#region User
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
@@ -34,6 +63,12 @@ class User(UserMixin, db.Model):
     token = db.Column(db.String(32), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
     role_admin = db.Column(db.Boolean)
+
+    shop_list_requests = db.relationship('ShopListRequest',
+                                        foreign_keys='ShopListRequest.user_id',
+                                        lazy='dynamic',
+                                        back_populates='requestor')
+
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -107,8 +142,8 @@ class User(UserMixin, db.Model):
             return None
         return user
 
-
-
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
+#endregion

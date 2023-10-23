@@ -42,6 +42,8 @@ def create_app(config_class=Config):
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)
 
+    from app.shop_list import bp as shop_list_bp
+    app.register_blueprint(shop_list_bp, url_prefix='/shop_list')
 
     return app
 
