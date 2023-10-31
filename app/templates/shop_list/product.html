@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% import "bootstrap_wtf.html" as wtf %}
+
+{% block content %}
+<div>
+    <a href="{{ url_for('shop_list.products') }}">
+        <button class="btn btn-primary mb-3">Back</button>
+    </a>
+</div>
+
+{% if product %}
+    <h1>{{ _('Product') }}  {{ product.id }}</h1>
+{% else %}
+    <h1> {{ _('Add Product') }}</h1>
+{% endif %}
+    {{ wtf.quick_form(form) }}
+{% endblock %}

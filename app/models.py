@@ -23,6 +23,13 @@ class ShopListProduct(db.Model):
     picture = db.Column(db.LargeBinary)
     barcode = db.Column(db.String(13))
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'description': self.description,
+            'barcode': self.barcode,
+        }
+
 class ShopListRequestStatus(enum.Enum):
     Open = 1
     Completed = 2
