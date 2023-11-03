@@ -3,11 +3,16 @@
 {% block content %}
 
 <h1>Products List</h1>
+<div>
+<a href="{{ url_for('shop_list.newproduct_form') }}">
+    <button class="btn btn-primary mb-3">New</button>
+</a>
+</div>
 <div class="column">
     <table id="data" class="table table-striped">
         <thead>
             <tr>
-                <th>id</th><th>Description</th><th>Barcode</th>
+                <th>id</th><th>Description</th><th>Barcode</th><th>OnList</th>
             </tr>
         </thead>
         <tbody>
@@ -24,6 +29,14 @@
                 </td>
                 <td>
                     {{ p.barcode }}
+                </td>
+                <td>
+                    <input type="hidden" name="product_id" value="{{ p.id }}">
+                    {% if p.open_requests|length %}
+                    <button type="submit" name="action" value="remove_from_list" class="btn btn-danger">Remove</button>
+                    {% else %}
+                    <button type="submit" name="action" value="add_to_list" class="btn btn-success">Add</button>
+                    {% endif %}
                 </td>
             </form>
         </tr>

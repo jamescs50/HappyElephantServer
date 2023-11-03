@@ -6,34 +6,24 @@ import json
 import os
 from time import time
 from flask import current_app, url_for
-from flask_login import UserMixin
+from flask_login import UserMixin,current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 import redis
 import rq
 from app import db, login
 #from app.search import add_to_index, remove_from_index, query_index
+from sqlalchemy import and_
+from sqlalchemy.orm import column_property
 
 #region ShoppingList
-class ShopListProduct(db.Model):
-    __tablename__ = 'shop_list_product'
-    __searchable__ = ['description']
-    id = db.Column(db.Integer, primary_key=True)
-    description = db.Column(db.String(50))
-    picture = db.Column(db.LargeBinary)
-    barcode = db.Column(db.String(13))
-
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'description': self.description,
-            'barcode': self.barcode,
-        }
 
 class ShopListRequestStatus(enum.Enum):
     Open = 1
     Completed = 2
-    Denied = 3
+    Cancelled = 3
+
+
 class ShopListRequest(db.Model):
     __tablename__ = 'shop_list_request'
     id = db.Column(db.Integer, primary_key=True)
@@ -41,11 +31,52 @@ class ShopListRequest(db.Model):
     product_id = db.Column(db.Integer,db.ForeignKey('shop_list_product.id'))
     requestor = db.relationship('User', foreign_keys='ShopListRequest.user_id',
                                 back_populates='shop_list_requests')
+    product = db.relationship('ShopListProduct',foreign_keys='ShopListRequest.product_id',
+                              back_populates='requests')
     requested_datetime = db.Column(db.DateTime,default=datetime.utcnow)
     status = db.Column(db.Enum(ShopListRequestStatus))
 
     completed_user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     completed_datetime = db.Column(db.DateTime)
+
+    def __repr__(self):
+        return '<{0} request for {1}>'.format(self.status,self.product.description)
+
+
+class ShopListProduct(db.Model):
+    __tablename__ = 'shop_list_product'
+    __searchable__ = ['description']
+    id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String(50))
+    picture = db.Column(db.LargeBinary)
+    barcode = db.Column(db.String(13))
+    requests = db.relationship('ShopListRequest',foreign_keys='ShopListRequest.product_id',
+                                lazy='dynamic',viewonly=True,
+                                back_populates='product')
+    open_requests = db.relationship(ShopListRequest,
+                                    primaryjoin=and_(ShopListRequest.product_id == id,ShopListRequest.status == ShopListRequestStatus.Open))
+
+
+    def __repr__(self):
+        return '<Product {}>'.format(self.description)
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'description': self.description,
+            'barcode': self.barcode,
+        }
+
+    def make_request(self,**kwargs):
+        if kwargs.get('user'):
+            user = kwargs['user']
+        else:
+            user = current_user
+        r = ShopListRequest(user_id = user,
+                            product_id = self.id,
+                            requestor = user,
+                            status = ShopListRequestStatus.Open)
+        db.session.add(r)
+        db.session.commit()
 
 #endregion
 

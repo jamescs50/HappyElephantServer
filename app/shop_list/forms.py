@@ -9,7 +9,7 @@ class ProductForm(FlaskForm):
     barcode = StringField(_l('Barcode'))
     update = SubmitField('Save')
 
-
-
 class EmptyForm(FlaskForm):
     submit = SubmitField('Submit')
+
+
