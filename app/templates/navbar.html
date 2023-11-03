@@ -1,0 +1,49 @@
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">
+            <img src="{{ url_for('static', filename='images/HappyElephant.png') }}" width="30" height="default" title="The Happy Elephant" />
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+              {% if current_user.is_anonymous %}
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('auth.login') }}">{{ _('Sign In') }}</a>
+              </li>
+
+              {% else %}
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{{ url_for('main.index') }}">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('main.data') }}">MQTT Data</a>
+              </li>
+            <!--Shopping List-->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Shopping List
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">{{ _('Shopping List') }}</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('shop_list.products') }}">{{ _('Products') }}</a></li>
+                </ul>
+              </li>
+            <!--Weather Station-->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="{{ current_user.avatar(70) }}" width="30" height="default" title="Your Account" />
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="{{ url_for('auth.edit_profile') }}">{{ _('Edit Profile') }}</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">{{ _('Sign Out') }}</a></li>
+                </ul>
+              </li>
+              {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
