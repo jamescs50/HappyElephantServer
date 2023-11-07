@@ -42,6 +42,22 @@ class ShopListRequest(db.Model):
     def __repr__(self):
         return '<{0} request for {1}>'.format(self.status,self.product.description)
 
+    def complete_request(self,**kwargs):
+        if kwargs.get('newstatus'):
+            newstatus = kwargs['newstatus']
+        else:
+            newstatus = ShopListRequestStatus.Completed
+        self.status = newstatus
+        if kwargs.get('user'):
+            user = kwargs['user']
+        else:
+            user = current_user
+        self.completed_user_id = user.id;
+        self.completed_datetime = datetime.utcnow()
+        if not kwargs.get('nocommit'):  #can supply a special arguement to not commit. Assumes program will commit later. (to reduce the number of commits)
+            db.session.commit()
+
+
 
 class ShopListProduct(db.Model):
     __tablename__ = 'shop_list_product'
@@ -54,7 +70,7 @@ class ShopListProduct(db.Model):
                                 lazy='dynamic',viewonly=True,
                                 back_populates='product')
     open_requests = db.relationship(ShopListRequest,
-                                    primaryjoin=and_(ShopListRequest.product_id == id,ShopListRequest.status == ShopListRequestStatus.Open))
+                                primaryjoin=and_(ShopListRequest.product_id == id,ShopListRequest.status == ShopListRequestStatus.Open))
 
 
     def __repr__(self):

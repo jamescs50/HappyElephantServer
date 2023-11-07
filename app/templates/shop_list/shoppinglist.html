@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Shopping List</h1>
+
+<div class="column">
+    <table id="data" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Product Id</th><th>Description</th><th>Requested By</th><th>Complete</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for r in openlist %}
+        <tr>
+            <form method="POST">
+                <th>
+                    <a href="{{ url_for('shop_list.product_form',productId = r.product.id) }}">
+                        {{ r.product.id }}
+                    </a>
+                </th>
+                <td>
+                    {{ r.product.description }}
+                </td>
+                <td>
+                    {{ r.requestor.username }}
+                </td>
+                <td>
+                    <input type="hidden" name="request_id" value="{{ r.id }}">
+                    <button type="submit" name="action" value="complete_request" class="btn btn-success">Complete</button>
+                </td>
+            </form>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.js"></script>
+<script>
+$(document).ready(function () {
+    $('#data').DataTable();
+});
+</script>
+{% endblock %}
