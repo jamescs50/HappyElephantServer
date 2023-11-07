@@ -23,7 +23,7 @@ def products():
         product = ShopListProduct.query.get(productId)
         if action == 'remove_from_list':
             for o in product.open_requests:
-                o.status = ShopListRequestStatus.Cancelled
+                o.complete_request(newstatus=ShopListRequestStatus.Cancelled,nocommit=True)
             db.session.commit()
         elif action == 'add_to_list':
             product.make_request()
@@ -69,12 +69,18 @@ def newproduct_form():
 #endregion
 
 #region mylist
-@bp.route('/mylist', methods=['GET', 'POST'])
-@login_required
-def mylist():
-    my_reqs = current_user.shop_list_requests
 
 @bp.route('/shoppinglist',methods=['GET','POST'])
 @login_required
 def shoppinglist():
-    openlist = ShopListRequest.query.fi
+    if request.method == 'POST':
+        action = request.form['action']
+        requestId = request.form['request_id']
+        listRequest = ShopListRequest.query.get(requestId)
+        if action == 'complete_request':
+            listRequest.complete_request(newstatus = ShopListRequestStatus.Completed)
+
+    openList = ShopListRequest.query.filter_by(status=ShopListRequestStatus.Open).all()
+    return render_template('shop_list/shoppinglist.html',openlist=openList)
+
+
