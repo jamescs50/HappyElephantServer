@@ -1,6 +1,6 @@
 import base64
 import enum
-from datetime import datetime, timedelta
+from datetime import datetime,timezone, timedelta
 from hashlib import md5
 import json
 import os
@@ -33,7 +33,7 @@ class ShopListRequest(db.Model):
                                 back_populates='shop_list_requests')
     product = db.relationship('ShopListProduct',foreign_keys='ShopListRequest.product_id',
                               back_populates='requests')
-    requested_datetime = db.Column(db.DateTime,default=datetime.utcnow)
+    requested_datetime = db.Column(db.DateTime,default=datetime.now(timezone.utc))
     status = db.Column(db.Enum(ShopListRequestStatus))
 
     completed_user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -53,7 +53,7 @@ class ShopListRequest(db.Model):
         else:
             user = current_user
         self.completed_user_id = user.id;
-        self.completed_datetime = datetime.utcnow()
+        self.completed_datetime = datetime.now(timezone.utc)
         if not kwargs.get('nocommit'):  #can supply a special arguement to not commit. Assumes program will commit later. (to reduce the number of commits)
             db.session.commit()
 
@@ -96,6 +96,19 @@ class ShopListProduct(db.Model):
 
 #endregion
 
+#region PersonalReadings
+
+class ReadingType(enum.Enum):
+    Peakflow = 1
+    BloodPressure = 2
+    Cancelled = 3
+class PersonalReading(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), index=True)
+
+
+#endregion
+
 #region markdown
 
 class MarkdownContent(db.Model):
@@ -111,7 +124,7 @@ class MarkdownContent(db.Model):
 class WeatherData(db.Model):
     __tablename__ = 'mqttlog'
     id = db.Column(db.Integer, primary_key=True)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     source_topic = db.Column(db.String(120), index=True)
     data = db.Column(db.String(120))
 #endregion
@@ -123,7 +136,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     about_me = db.Column(db.String(140))
-    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    last_seen = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     token = db.Column(db.String(32), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
     role_admin = db.Column(db.Boolean)
@@ -188,7 +201,7 @@ class User(UserMixin, db.Model):
             self.set_password(data['password'])
 
     def get_token(self, expires_in=3600):
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         if self.token and self.token_expiration > now + timedelta(seconds=60):
             return self.token
         self.token = base64.b64encode(os.urandom(24)).decode('utf-8')
@@ -197,12 +210,12 @@ class User(UserMixin, db.Model):
         return self.token
 
     def revoke_token(self):
-        self.token_expiration = datetime.utcnow() - timedelta(seconds=1)
+        self.token_expiration = datetime.now(timezone.utc)- timedelta(seconds=1)
 
     @staticmethod
     def check_token(token):
         user = User.query.filter_by(token=token).first()
-        if user is None or user.token_expiration < datetime.utcnow():
+        if user is None or user.token_expiration < datetime.now(timezone.utc):
             return None
         return user
 
