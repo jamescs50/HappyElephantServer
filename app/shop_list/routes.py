@@ -16,13 +16,14 @@ from app.shop_list import bp
 #@login_required
 def products():
     p = ShopListProduct.query.all()
+    p.sort(key = lambda x:x.completed_requests,reverse=True)
     form = EmptyForm()
     if request.method == 'POST':
         action = request.form['action']
         productId = request.form['product_id']
         product = ShopListProduct.query.get(productId)
         if action == 'remove_from_list':
-            for o in product.open_requests:
+            for o in product.requests.filter_by(status = ShopListRequestStatus.Open).all():
                 o.complete_request(newstatus=ShopListRequestStatus.Cancelled,nocommit=True)
             db.session.commit()
         elif action == 'add_to_list':

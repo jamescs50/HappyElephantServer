@@ -12,7 +12,7 @@
     <table id="data" class="table table-striped">
         <thead>
             <tr>
-                <th>id</th><th>Description</th><th>Barcode</th><th>OnList</th>
+                <th>Times Bought</th><th>Description</th><th>OnList</th>
             </tr>
         </thead>
         <tbody>
@@ -21,18 +21,17 @@
             <form method="POST">
                 <th>
                     <a href="{{ url_for('shop_list.product_form',productId = p.id) }}">
-                        {{ p.id }}
+                        {{ p.completed_requests }}
                     </a>
                 </th>
                 <td>
-                    {{ p.description }}
-                </td>
-                <td>
-                    {{ p.barcode }}
+                    <a href="{{ url_for('shop_list.product_form',productId = p.id) }}">
+                        {{ p.description }}
+                    </a>
                 </td>
                 <td>
                     <input type="hidden" name="product_id" value="{{ p.id }}">
-                    {% if p.open_requests|length %}
+                    {% if p.open_requests %}
                     <button type="submit" name="action" value="remove_from_list" class="btn btn-danger">Remove</button>
                     {% else %}
                     <button type="submit" name="action" value="add_to_list" class="btn btn-success">Add</button>
@@ -53,7 +52,9 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.js"></script>
 <script>
 $(document).ready(function () {
-    $('#data').DataTable();
+    $('#data').DataTable(
+        order: [[0, 'desc']]
+    );
 });
 </script>
 {% endblock %}

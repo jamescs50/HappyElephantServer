@@ -69,9 +69,13 @@ class ShopListProduct(db.Model):
     requests = db.relationship('ShopListRequest',foreign_keys='ShopListRequest.product_id',
                                 lazy='dynamic',viewonly=True,
                                 back_populates='product')
-    open_requests = db.relationship(ShopListRequest,
-                                primaryjoin=and_(ShopListRequest.product_id == id,ShopListRequest.status == ShopListRequestStatus.Open))
+    @property
+    def completed_requests(self):
+        return self.requests.filter_by(status=ShopListRequestStatus.Completed).count()
 
+    @property
+    def open_requests(self):
+        return self.requests.filter_by(status=ShopListRequestStatus.Open).count()
 
     def __repr__(self):
         return '<Product {}>'.format(self.description)
@@ -101,10 +105,20 @@ class ShopListProduct(db.Model):
 class ReadingType(enum.Enum):
     Peakflow = 1
     BloodPressure = 2
-    Cancelled = 3
+    HeartRate = 3
+
+class PersonalReadingType(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), index=True)
+    readingType = db.Column(db.Enum(ReadingType))
+    readingFrequency = db.Column(db.Float)  #Readings per day. 1 = once per day - .5 = every other day
+
 class PersonalReading(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), index=True)
+    readingType = db.Column(db.Enum(ReadingType))
+    reading = db.Column(db.Float)
+    reading_datetime = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
 
 #endregion
