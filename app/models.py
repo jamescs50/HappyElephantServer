@@ -128,7 +128,7 @@ class PersonalReading(db.Model):
 class MarkdownContent(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     title = db.Column(db.String(100))
-    md_content = db.Column(db.String)
+    md_content = db.Column(db.Text)
     def __repr__(self):
         return '<MDContent {}>'.format(self.title)
 
