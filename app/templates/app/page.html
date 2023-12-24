@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block link %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/code-style.css') }}">
+{% endblock link %}
+{% block content %}
+
+<h1>{{ md.title }}</h1>
+<div>
+{{ md.md_content | safe }}
+</div>
+
+{% endblock %}

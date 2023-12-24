@@ -4,11 +4,13 @@ from flask import render_template, flash, redirect, url_for, request, g, \
 from flask_login import current_user, login_required
 from flask_babel import _, get_locale
 #from langdetect import detect, LangDetectException
+import markdown
 #from app.translate import translate
 from app import db
 from app.main.forms import EmptyForm,EditProfileForm
-from app.models import  User,WeatherData
+from app.models import  User,WeatherData,MarkdownContent
 from app.main import bp
+
 
 
 @bp.route('/', methods=['GET', 'POST'])
@@ -52,6 +54,15 @@ def edit_profile():
                            form=form)
 
 #endregion
+
+@bp.route('/page/<title>')
+def page(title):
+    mdc = markdown.Markdown(extensions=["fenced_code","codehilite"])
+    md = MarkdownContent.query.filter_by(title=title).first_or_404()
+    md.md_content = mdc.convert(md.md_content)
+    return render_template('app/page.html',md=md)
+
+
 @bp.route('/data')
 @login_required
 def data():

@@ -11,12 +11,13 @@
     <!-- Fontawsome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/fontawesome.min.css" integrity="sha384-QYIZto+st3yW+o8+5OHfT6S482Zsvz2WfOzpFSXMF9zqeLcFV0/wlZpMtyFcZALm" crossorigin="anonymous">-->
-
     <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='images/HappyElephant.ico') }}">
+    {% block link %}
+    {% endblock link %}
     {% if title %}
     <title>{{ title }} - HappyElephant</title>
     {% else %}
-    <title>{{ _('HappyElephant') }}</title>
+    <title>HappyElephant</title>
     {% endif %}
 </head>
 
